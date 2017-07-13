@@ -1,0 +1,40 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/elements/dom-if.html">
+
+<link rel="import" href="mtz-permission-check-mixin.html">
+
+<script>
+  (() => {
+    /**
+      * `mtz-auth-check`
+      * Handles permissioning of content based on desired requirements
+      *
+      * @extends Polymer.DomIf
+      * @applies mtz.PermissionCheckMixin
+      * @demo demo/index.html
+      */
+    class MtzAuthCheck extends mtz.PermissionCheckMixin(Polymer.DomIf) {
+      static get is() { return 'mtz-auth-check'; }
+      static get properties() {
+        return {
+          if: {
+            type: Boolean,
+            readOnly: true,
+            observer: '__debounceRender'
+          }
+        };
+      }
+      static get observers() {
+        return [
+          `__computeIf(
+              signedIn, anonymous, authenticated,
+              exclude, all, any,
+              permissions, roles,
+              all.*, any.*, roles.*, permissions.*, exclude.*)`
+        ];
+      }
+    }
+
+    window.customElements.define(MtzAuthCheck.is, MtzAuthCheck);
+  })();
+</script>
