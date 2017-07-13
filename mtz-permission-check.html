@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="mtz-permission-check">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `mtz-permission-check`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class MtzPermissionCheck extends Polymer.Element {
+      static get is() { return 'mtz-permission-check'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'mtz-permission-check'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(MtzPermissionCheck.is, MtzPermissionCheck);
+  </script>
+</dom-module>
