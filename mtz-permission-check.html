@@ -1,36 +1,40 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/elements/dom-if.html">
 
-<dom-module id="mtz-permission-check">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-  </template>
+<link rel="import" href="mtz-permission-check-mixin.html">
 
-  <script>
+<script>
+  (() => {
     /**
-     * `mtz-permission-check`
-     * 
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class MtzPermissionCheck extends Polymer.Element {
+      * `mtz-permission-check`
+      * Handles permissioning of content based on desired requirements
+      *
+      * @extends Polymer.DomIf
+      * @applies mtz.PermissionCheckMixin
+      * @demo demo/index.html
+      */
+    class MtzPermissionCheck extends mtz.PermissionCheckMixin(Polymer.DomIf) {
       static get is() { return 'mtz-permission-check'; }
       static get properties() {
         return {
-          prop1: {
-            type: String,
-            value: 'mtz-permission-check'
-          }
+          if: {
+            type: Boolean,
+            readOnly: true,
+            observer: '__debounceRender',
+          },
         };
+      }
+      static get observers() {
+        return [
+          `__computeIf(
+              signedIn, anonymous, authenticated,
+              exclude, all, any,
+              permissions, roles,
+              all.*, any.*, roles.*, permissions.*, exclude.*)`
+        ];
       }
     }
 
     window.customElements.define(MtzPermissionCheck.is, MtzPermissionCheck);
-  </script>
-</dom-module>
+  })();
+</script>

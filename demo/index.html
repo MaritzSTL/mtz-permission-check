@@ -12,8 +12,24 @@
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../mtz-permission-check.html">
 
+    <link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+    <link rel="import" href="../../paper-item/paper-item.html">
+    <link rel="import" href="../../paper-listbox/paper-listbox.html">
+
     <custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
+        .permissions {
+          display: flex;
+          justify-content: space-around;
+        }
+        .userStatus {
+           display: flex;
+           justify-content: space-around;
+        }
+        .requirements {
+          display: flex;
+          justify-content: space-around;
+        }
       </style>
     </custom-style>
   </head>
@@ -21,8 +37,133 @@
     <div class="vertical-section-container centered">
       <h3>Basic mtz-permission-check demo</h3>
       <demo-snippet>
+        <dom-bind>
+          <template>
+            <div><strong>Content will show up here when the user meets the permissions selected below.</strong></div>
+            <mtz-permission-check
+              anonymous="[[anonymous]]"
+              signed-in="[[signedIn]]"
+              authenticated="[[authenticated]]"
+              any="[[any]]"
+              all="[[all]]"
+              exclude="[[exclude]]"
+              roles="[[roles]]"
+              permissions="[[permissions]]"
+              restamp>
+              <template>
+                Top Secret Content
+              </template>
+            </mtz-permission-check>
+            <hr>
+            <div>
+              <h4>User has these Roles and Permissions</h4>
+              <div class="permissions">
+                <label>
+                  <strong>Roles</strong>
+                  <paper-listbox
+                    selected-values="{{roles}}"
+                    attr-for-selected="value"
+                    multi>
+                    <paper-item value="ADMIN">Admin</paper-item>
+                    <paper-item value="MANAGER">Manager</paper-item>
+                    <paper-item value="USER">User</paper-item>
+                  </paper-listbox>
+                </label>
+                <label>
+                  <strong>Permissions</strong>
+                  <paper-listbox
+                    selected-values="{{permissions}}"
+                    attr-for-selected="value"
+                    multi>
+                    <paper-item value="VIEW">View</paper-item>
+                    <paper-item value="CREATE">Create</paper-item>
+                    <paper-item value="EDIT">Edit</paper-item>
+                    <paper-item value="DELETE">Delete</paper-item>
+                  </paper-listbox>
+                </label>
+              </div>
+            </div>
+            <div>
+              <h4>Control User's Authentication status</h4>
+              <div class="userStatus">
+                <paper-checkbox checked="{{signedIn}}">
+                  Signed In
+                </paper-checkbox>
+                <paper-checkbox checked="{{anonymous}}">
+                  Anonymous
+                </paper-checkbox>
+                <paper-checkbox checked="{{authenticated}}">
+                  Authenticated
+                </paper-checkbox>
+              </div>
+            </div>
+            <div>
+              <h4>Control Roles and Permissions required to view content</h4>
+              <div class="requirements">
+                <label>
+                  <strong>Any</strong>
+                  <paper-listbox
+                    selected-values="{{any}}"
+                    attr-for-selected="value"
+                    multi>
+                    <paper-item value="ADMIN">Admin</paper-item>
+                    <paper-item value="MANAGER">Manager</paper-item>
+                    <paper-item value="USER">User</paper-item>
+                    <paper-item value="VIEW">View</paper-item>
+                    <paper-item value="CREATE">Create</paper-item>
+                    <paper-item value="EDIT">Edit</paper-item>
+                    <paper-item value="DELETE">Delete</paper-item>
+                  </select>
+                </label>
+                <label>
+                  <strong>All</strong>
+                  <paper-listbox
+                    selected-values="{{all}}"
+                    attr-for-selected="value"
+                    multi>
+                    <paper-item value="ADMIN">Admin</paper-item>
+                    <paper-item value="MANAGER">Manager</paper-item>
+                    <paper-item value="USER">User</paper-item>
+                    <paper-item value="VIEW">View</paper-item>
+                    <paper-item value="CREATE">Create</paper-item>
+                    <paper-item value="EDIT">Edit</paper-item>
+                    <paper-item value="DELETE">Delete</paper-item>
+                  </select>
+                </label>
+                <label>
+                  <strong>Exclude</strong>
+                  <paper-listbox
+                    selected-values="{{exclude}}"
+                    attr-for-selected="value"
+                    multi>
+                    <paper-item value="ADMIN">Admin</paper-item>
+                    <paper-item value="MANAGER">Manager</paper-item>
+                    <paper-item value="USER">User</paper-item>
+                    <paper-item value="VIEW">View</paper-item>
+                    <paper-item value="CREATE">Create</paper-item>
+                    <paper-item value="EDIT">Edit</paper-item>
+                    <paper-item value="DELETE">Delete</paper-item>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </template>
+        </dom-bind>
         <template>
-          <mtz-permission-check></mtz-permission-check>
+          <mtz-permission-check
+            anonymous="[[anonymous]]"
+            signed-in="[[signedIn]]"
+            authenticated="[[authenticated]]"
+            any="[[any]]"
+            all="[[all]]"
+            exclude="[[exclude]]"
+            roles="[[roles]]"
+            permissions="[[permissions]]"
+            restamp>
+            <template>
+              Top Secret Content
+            </template>
+          </mtz-permission-check>
         </template>
       </demo-snippet>
     </div>

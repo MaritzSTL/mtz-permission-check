@@ -1,0 +1,128 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/utils/debounce.html">
+
+<script>
+  (() => {
+    // Ensure we have a namespace
+    window.mtz = window.mtz || {};
+
+    /**
+     * Handles the permission checking based on desired requirements
+     * @polymerMixin mtz.PermissionCheckMixin
+     *
+     * @param {Class} baseClass - class to extend
+     * @return {Class} - extended class
+     */
+    mtz.PermissionCheckMixin = (baseClass) => {
+      return class extends baseClass {
+        static get properties() {
+          return {
+            /* Non-logged in user */
+            anonymous: {
+              type: Boolean,
+              value: false,
+            },
+            /* User has signed in with valid token */
+            signedIn: {
+              type: Boolean,
+              value: false,
+            },
+            /* Only checks that the user is signed in */
+            authenticated: {
+              type: Boolean,
+              value: false,
+            },
+            /* Must have at least one of these permissions */
+            any: {
+              type: Array,
+              value() { return []; }
+            },
+            /* Must have all of these permissions */
+            all: {
+              type: Array,
+              value() { return []; }
+            },
+            /* Must not have any of these permissions */
+            exclude: {
+              type: Array,
+              value() { return []; }
+            },
+            roles: {
+              type: Array,
+              value() { return []; }
+            },
+            permissions: {
+              type: Array,
+              value() { return []; }
+            },
+          };
+        }
+
+        /**
+         * Determines if the content should display based upon the
+         * user's permissions and the passed requirements
+         *
+         * @param {Boolean} signedIn
+         * @param {Boolean} anonymous
+         * @param {Boolean} authenticated
+         * @param {Array} exclude
+         * @param {Array} all
+         * @param {Array} any
+         * @param {Array} permissions
+         * @param {Array} roles
+         * @private
+         */
+        __computeIf(signedIn, anonymous, authenticated,
+                    exclude, all, any,
+                    permissions, roles) {
+          // Ensure everything is set before continuing
+          if (typeof anonymous !== 'boolean' ||
+              typeof signedIn !== 'boolean' ||
+              typeof authenticated !== 'boolean' ||
+              !Array.isArray(any) ||
+              !Array.isArray(all) ||
+              !Array.isArray(exclude) ||
+              !Array.isArray(roles) ||
+              !Array.isArray(permissions)) {
+            return this._setIf(false);
+          }
+
+
+          this.__debouncer = Polymer.Debouncer.debounce(this.__debouncer,
+            Polymer.Async.timeOut.after(),
+            (() => {
+              // Must be not signed in
+              if (!signedIn && anonymous) return this._setIf(true);
+
+              // Implicitly have to be signed in from here onward
+              if (!signedIn) return this._setIf(false);
+
+              const excludePerms = new Set(exclude.filter(Boolean));
+
+              // Only needs to be authenticated
+              if (authenticated && !excludePerms.size) return this._setIf(true);
+
+              // Need to check permissions on top of being authenticated
+              const currentPerms = new Set(roles.concat(permissions).filter(Boolean));
+              const anyPerms = new Set(any.filter(Boolean));
+              const allPerms = new Set(all.filter(Boolean));
+
+              let allow = null;
+              const permFilter = (p) => currentPerms.has(p);
+              if (anyPerms.size) {
+                allow = Array.from(anyPerms).some(permFilter);
+              }
+              if (allPerms.size && allow !== false) {
+                allow = Array.from(allPerms).every(permFilter);
+              }
+              if (excludePerms.size && allow !== false) {
+                allow = !Array.from(excludePerms).some(permFilter);
+              }
+
+              this._setIf(Boolean(allow));
+            }));
+        }
+      };
+    };
+  })();
+</script>

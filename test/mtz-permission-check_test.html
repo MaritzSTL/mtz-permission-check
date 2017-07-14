@@ -13,38 +13,203 @@
   </head>
   <body>
 
-    <test-fixture id="BasicTestFixture">
+    <test-fixture id="basic">
       <template>
         <mtz-permission-check></mtz-permission-check>
       </template>
     </test-fixture>
 
-    <test-fixture id="ChangedPropertyTestFixture">
-      <template>
-        <mtz-permission-check prop1="new-prop1"></mtz-permission-check>
-      </template>
-    </test-fixture>
-
     <script>
-      suite('mtz-permission-check', function() {
+      describe('mtz-permission-check', () => {
+        let element;
 
-        test('instantiating the element with default properties works', function() {
-          var element = fixture('BasicTestFixture');
-          assert.equal(element.prop1, 'mtz-permission-check');
-          var elementShadowRoot = element.shadowRoot;
-          var elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello mtz-permission-check!');
+        beforeEach(() => {
+          element = fixture('basic');
         });
 
-        test('setting a property on the element works', function() {
-          // Create a test fixture
-          var element = fixture('ChangedPropertyTestFixture');
-          assert.equal(element.prop1, 'new-prop1');
-          var elementShadowRoot = element.shadowRoot;
-          var elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
+        // Sanity Check
+        it('instantiating the element works', () => {
+          expect(element.localName).to.equal('mtz-permission-check');
         });
 
+        // Observers
+        describe('__computeIf', () => {
+          it('should set `if` to false when all properties are not set', () => {
+            element.__computeIf(undefined, false, false, [], [], [], [], []);
+            expect(element.if).to.equal(false);
+            element.__computeIf(false, undefined, false, [], [], [], [], []);
+            expect(element.if).to.equal(false);
+            element.__computeIf(false, false, undefined, [], [], [], [], []);
+            expect(element.if).to.equal(false);
+            element.__computeIf(false, false, false, undefined, [], [], [], []);
+            expect(element.if).to.equal(false);
+            element.__computeIf(false, false, false, [], undefined, [], [], []);
+            expect(element.if).to.equal(false);
+            element.__computeIf(false, false, false, [], [], undefined, [], []);
+            expect(element.if).to.equal(false);
+            element.__computeIf(false, false, false, [], [], [], undefined, []);
+            expect(element.if).to.equal(false);
+            element.__computeIf(false, false, false, [], [], [], []);
+            expect(element.if).to.equal(false);
+          });
+          it('should debounce the main logic', (done) => {
+            element.__computeIf(false, false, false, [], [], [], [], []);
+            flush(() => {
+              expect(element.if).to.equal(false);
+              expect(element.__debouncer instanceof Polymer.Debouncer).to.be.ok;
+              done();
+            });
+          });
+          describe('Permissioning Logic', () => {
+            it('should set `if` to true when not signed in and anonymous required', (done) => {
+              element.__computeIf(false, true, false, [], [], [], [], []);
+              flush(() => {
+                expect(element.if).to.equal(true);
+                done();
+              });
+            });
+            it('should set `if` to true when not signed in', (done) => {
+              element.__computeIf(false, false, false, [], [], [], [], []);
+              flush(() => {
+                expect(element.if).to.equal(false);
+                done();
+              });
+            });
+            describe('When signed in', () => {
+              it('should set `if` to true if only authentication is required', (done) => {
+                element.__computeIf(true, false, true, [], [], [], [], []);
+                flush(() => {
+                  expect(element.if).to.equal(true);
+                  done();
+                });
+              });
+              describe('and authentication is required', () => {
+                it('should set `if` to true with exclusions that the user doesn\'t have', (done) => {
+                  element.__computeIf(true, false, true, ['EXCLUSION'], [], [], ['INCLUSION'], []);
+                  flush(() => {
+                    expect(element.if).to.equal(true);
+                    done();
+                  });
+                });
+                it('should set `if` to false with duplicate exclusions that the user has', (done) => {
+                  element.__computeIf(true, false, true, ['EXCLUSION', 'EXCLUSION'], [], [], ['EXCLUSION'], []);
+                  flush(() => {
+                    expect(element.if).to.equal(false);
+                    done();
+                  });
+                });
+                it('should set `if` to true with falsy exclusions that the user doesn\'t have', (done) => {
+                  element.__computeIf(true, false, true, ['', false, 0, null, undefined], [], [],
+                    ['', false, 0, null, undefined], []);
+                  flush(() => {
+                    expect(element.if).to.equal(true);
+                    done();
+                  });
+                });
+                describe('and any check is used', () => {
+                  it('should set `if` to false if the user doesn\'t have any of the requirements', (done) => {
+                    element.__computeIf(true, false, false, [], [], ['ADMIN', 'MANAGER'], [], ['USER']);
+                    flush(() => {
+                      expect(element.if).to.equal(false);
+                      done();
+                    });
+                  });
+                  it('should set `if` to true if the user does have any of the requirements', (done) => {
+                    element.__computeIf(true, false, false, [], [], ['ADMIN', 'MANAGER'], [], ['MANAGER']);
+                    flush(() => {
+                      expect(element.if).to.equal(true);
+                      done();
+                    });
+                  });
+                  it('should set `if` to true if the user does have any of the requirements', (done) => {
+                    element.__computeIf(true, false, false, [], [], ['ADMIN', 'MANAGER'], [], ['ADMIN']);
+                    flush(() => {
+                      expect(element.if).to.equal(true);
+                      done();
+                    });
+                  });
+                });
+                describe('and all check is used', () => {
+                  it('should set `if` to false if the user doesn\'t have all of the requirements', (done) => {
+                    element.__computeIf(true, false, false, [], ['VIEW', 'CREATE'], [], [], ['VIEW']);
+                    flush(() => {
+                      expect(element.if).to.equal(false);
+                      done();
+                    });
+                  });
+                  it('should set `if` to false if the user does have all of the requirements', (done) => {
+                    element.__computeIf(true, false, false, [], ['VIEW', 'CREATE'], [], [], ['CREATE']);
+                    flush(() => {
+                      expect(element.if).to.equal(false);
+                      done();
+                    });
+                  });
+                  it('should set `if` to true if the user does have all of the requirements', (done) => {
+                    element.__computeIf(true, false, false, [], ['VIEW', 'CREATE'], [], [], ['VIEW', 'CREATE']);
+                    flush(() => {
+                      expect(element.if).to.equal(true);
+                      done();
+                    });
+                  });
+                });
+                describe('and a combination of checks is used', () => {
+                  it('should set `if` to true if all checks are met', (done) => {
+                    element.__computeIf(true, false, false,
+                      ['EXCLUSION'], // Exclusions
+                      ['CREATE', 'DELETE'], // All
+                      ['ADMIN', 'MANAGER', 'USER'], // Any
+                      ['VIEW', 'CREATE', 'DELETE'], // Permissions
+                      ['ADMIN'] // Roles
+                    );
+                    flush(() => {
+                      expect(element.if).to.equal(true);
+                      done();
+                    });
+                  });
+                  it('should set `if` to false if all checks are not met', (done) => {
+                    element.__computeIf(true, false, false,
+                      ['EXCLUSION'], // Exclusions
+                      ['CREATE', 'DELETE'], // All
+                      ['ADMIN', 'MANAGER'], // Any
+                      ['VIEW', 'CREATE', 'DELETE'], // Permissions
+                      ['USER'] // Roles
+                    );
+                    flush(() => {
+                      expect(element.if).to.equal(false);
+                      done();
+                    });
+                  });
+                  it('should set `if` to false if all checks are not met', (done) => {
+                    element.__computeIf(true, false, false,
+                      ['EXCLUSION'], // Exclusions
+                      ['CREATE', 'DELETE'], // All
+                      ['ADMIN', 'MANAGER', 'USER'], // Any
+                      ['VIEW', 'CREATE', 'DELETE', 'EXCLUSION'], // Permissions
+                      ['ADMIN'] // Roles
+                    );
+                    flush(() => {
+                      expect(element.if).to.equal(false);
+                      done();
+                    });
+                  });
+                  it('should set `if` to false if all checks are not met', (done) => {
+                    element.__computeIf(true, false, false,
+                      ['EXCLUSION'], // Exclusions
+                      ['CREATE', 'DELETE'], // All
+                      ['ADMIN', 'MANAGER', 'USER'], // Any
+                      ['VIEW', 'CREATE'], // Permissions
+                      ['ADMIN'] // Roles
+                    );
+                    flush(() => {
+                      expect(element.if).to.equal(false);
+                      done();
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
       });
     </script>
 
