@@ -57,6 +57,20 @@
           };
         }
 
+        /**
+         * Determines if the content should display based upon the
+         * user's permissions and the passed requirements
+         *
+         * @param {Boolean} signedIn
+         * @param {Boolean} anonymous
+         * @param {Boolean} authenticated
+         * @param {Array} exclude
+         * @param {Array} all
+         * @param {Array} any
+         * @param {Array} permissions
+         * @param {Array} roles
+         * @private
+         */
         __computeIf(signedIn, anonymous, authenticated,
                     exclude, all, any,
                     permissions, roles) {
