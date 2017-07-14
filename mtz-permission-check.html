@@ -13,15 +13,15 @@
       * @applies mtz.PermissionCheckMixin
       * @demo demo/index.html
       */
-    class MtzAuthCheck extends mtz.PermissionCheckMixin(Polymer.DomIf) {
+    class MtzPermissionCheck extends mtz.PermissionCheckMixin(Polymer.DomIf) {
       static get is() { return 'mtz-permission-check'; }
       static get properties() {
         return {
           if: {
             type: Boolean,
             readOnly: true,
-            observer: '__debounceRender'
-          }
+            observer: '__debounceRender',
+          },
         };
       }
       static get observers() {
@@ -35,6 +35,6 @@
       }
     }
 
-    window.customElements.define(MtzAuthCheck.is, MtzAuthCheck);
+    window.customElements.define(MtzPermissionCheck.is, MtzPermissionCheck);
   })();
 </script>

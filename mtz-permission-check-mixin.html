@@ -11,6 +11,7 @@
      * @polymerMixin mtz.PermissionCheckMixin
      *
      * @param {Class} baseClass - class to extend
+     * @return {Class} - extended class
      */
     mtz.PermissionCheckMixin = (baseClass) => {
       return class extends baseClass {
@@ -19,17 +20,17 @@
             /* Non-logged in user */
             anonymous: {
               type: Boolean,
-              value: false
+              value: false,
             },
             /* User has signed in with valid token */
             signedIn: {
               type: Boolean,
-              value: false
+              value: false,
             },
             /* Only checks that the user is signed in */
             authenticated: {
               type: Boolean,
-              value: false
+              value: false,
             },
             /* Must have at least one of these permissions */
             any: {
@@ -53,7 +54,7 @@
             permissions: {
               type: Array,
               value() { return []; }
-            }
+            },
           };
         }
 
@@ -107,7 +108,7 @@
               const allPerms = new Set(all.filter(Boolean));
 
               let allow = null;
-              let permFilter = (p) => currentPerms.has(p);
+              const permFilter = (p) => currentPerms.has(p);
               if (anyPerms.size) {
                 allow = Array.from(anyPerms).some(permFilter);
               }
@@ -119,7 +120,7 @@
               }
 
               this._setIf(Boolean(allow));
-            }).bind(this));
+            }));
         }
       };
     };
