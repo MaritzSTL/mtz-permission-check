@@ -1,4 +1,4 @@
-# \<mtz-auth-check\>
+# \<mtz-permission-check\>
 
 
 

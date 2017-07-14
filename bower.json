@@ -1,6 +1,6 @@
 {
-  "name": "mtz-auth-check",
-  "main": "mtz-auth-check.html",
+  "name": "mtz-permission-check",
+  "main": "mtz-permission-check.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0"
   },

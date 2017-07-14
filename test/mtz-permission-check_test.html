@@ -4,23 +4,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>mtz-auth-check test</title>
+    <title>mtz-permission-check test</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
 
-    <link rel="import" href="../mtz-auth-check.html">
+    <link rel="import" href="../mtz-permission-check.html">
   </head>
   <body>
 
     <test-fixture id="basic">
       <template>
-        <mtz-auth-check></mtz-auth-check>
+        <mtz-permission-check></mtz-permission-check>
       </template>
     </test-fixture>
 
     <script>
-      describe('mtz-auth-check', () => {
+      describe('mtz-permission-check', () => {
         let element;
 
         beforeEach(() => {
@@ -29,7 +29,7 @@
 
         // Sanity Check
         it('instantiating the element works', () => {
-          expect(element.localName).to.equal('mtz-auth-check');
+          expect(element.localName).to.equal('mtz-permission-check');
         });
 
         // Observers

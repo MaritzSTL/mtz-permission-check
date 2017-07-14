@@ -6,7 +6,7 @@
 <script>
   (() => {
     /**
-      * `mtz-auth-check`
+      * `mtz-permission-check`
       * Handles permissioning of content based on desired requirements
       *
       * @extends Polymer.DomIf
@@ -14,7 +14,7 @@
       * @demo demo/index.html
       */
     class MtzAuthCheck extends mtz.PermissionCheckMixin(Polymer.DomIf) {
-      static get is() { return 'mtz-auth-check'; }
+      static get is() { return 'mtz-permission-check'; }
       static get properties() {
         return {
           if: {

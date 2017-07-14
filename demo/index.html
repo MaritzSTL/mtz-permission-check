@@ -4,13 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>mtz-auth-check demo</title>
+    <title>mtz-permission-check demo</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../mtz-auth-check.html">
+    <link rel="import" href="../mtz-permission-check.html">
 
     <link rel="import" href="../../paper-checkbox/paper-checkbox.html">
     <link rel="import" href="../../paper-item/paper-item.html">
@@ -36,12 +36,12 @@
   </head>
   <body>
     <div class="vertical-section-container centered">
-      <h3>Basic mtz-auth-check demo</h3>
+      <h3>Basic mtz-permission-check demo</h3>
       <demo-snippet>
         <dom-bind>
           <template>
             <div><strong>Content will show up here when the user meets the permissions selected below.</strong></div>
-            <mtz-auth-check
+            <mtz-permission-check
               anonymous="[[anonymous]]"
               signed-in="[[signedIn]]"
               authenticated="[[authenticated]]"
@@ -54,7 +54,7 @@
               <template>
                 Top Secret Content
               </template>
-            </mtz-auth-check>
+            </mtz-permission-check>
             <hr>
             <div>
               <h4>User has these Roles and Permissions</h4>
@@ -151,7 +151,7 @@
           </template>
         </dom-bind>
         <template>
-          <mtz-auth-check
+          <mtz-permission-check
             anonymous="[[anonymous]]"
             signed-in="[[signedIn]]"
             authenticated="[[authenticated]]"
@@ -164,7 +164,7 @@
             <template>
               Top Secret Content
             </template>
-          </mtz-auth-check>
+          </mtz-permission-check>
         </template>
       </demo-snippet>
     </div>
