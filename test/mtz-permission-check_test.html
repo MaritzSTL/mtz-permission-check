@@ -99,7 +99,8 @@
                   });
                 });
                 it('should set `if` to true with falsy exclusions that the user doesn\'t have', (done) => {
-                  element.__computeIf(true, false, true, ['', false, 0, null, undefined], [], [], ['', false, 0, null, undefined], []);
+                  element.__computeIf(true, false, true, ['', false, 0, null, undefined], [], [],
+                    ['', false, 0, null, undefined], []);
                   flush(() => {
                     expect(element.if).to.equal(true);
                     done();
