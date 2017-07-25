@@ -1,3 +1,6 @@
+[![Build Status](https://img.shields.io/travis/MaritzSTL/mtz-permission-check/master.svg?style=flat-square)](https://travis-ci.org/MaritzSTL/mtz-permission-check)
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg?style=flat-square)](https://www.webcomponents.org/element/MaritzSTL/mtz-permission-check)
+
 # \<mtz-permission-check\>
 
 <!-- 
